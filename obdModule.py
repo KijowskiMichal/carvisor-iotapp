@@ -4,12 +4,12 @@ import time
 
 class ObdReader:
 
-    def __init__(self):
-        self.connection = obd.Async('/dev/pts/1', fast=False)
+    def __init__(self,send):
+        # self.logging()
+        self.connection = obd.Async('/dev/pts/1', fast=False, delay_cmds=1)
+        self.commands_watching = [obd.commands.RPM,obd.commands.SPEED,obd.commands.THROTTLE_POS]
+        self.sender = send
 
-    # update value of
-    def new_value(self,r):
-        print(r.value)
 
     def logging(self):
         obd.logger.setLevel(obd.logging.DEBUG)
@@ -21,8 +21,14 @@ class ObdReader:
         #     print(i)
         # resp = obd.commands.GET_DTC
         # print(self.connection.query(obd.commands.GET_DTC))
-        self.connection.watch(obd.commands[1][12], callback=self.new_value)
-        self.connection.watch(obd.commands[1][13], callback=self.new_value)
+        for i in self.commands_watching:
+            self.connection.watch(i, callback=self.sender.pack)
         self.connection.start()
 
+    def check_DTC_codes(self):
+        dtc_codes = self.connection.query(obd.commands.GET_DTC)
+        if str(dtc_codes) == "None":
+            print("No DTC codes")
+        else:
+            print(dtc_codes)
 
