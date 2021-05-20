@@ -14,6 +14,7 @@ class RequestAPI:
         self.start_session()
         if self.check_authorization():
             self.get_config_from_server()
+            # self.start_track()
         else:
             logging.warning("Something went wrong with authorization")
 
@@ -39,6 +40,25 @@ class RequestAPI:
     def get_config_from_server(self):
         config_from_server = self.session.request("GET", self.base_url + "API/carConfiguration/get/")
         return config_from_server.json()
+
+    def send_data_to_server(self,obd_data):
+        # starting new session with server
+        req = requests.Request("POST", self.base_url + "API/track/updateTrack/", data=obd_data)
+        ready_request = self.session.prepare_request(req)
+        response = self.session.send(ready_request)
+        if response.status_code == 200:
+            logging.debug("Sending obd data finished")
+        else:
+            logging.warning("Problem occurred when sending obd data to server, error code: " + str(response.status_code))
+
+    def start_track(self):
+        req = requests.Request("POST", self.base_url + "API/track/start/")
+        ready_request = self.session.prepare_request(req)
+        response = self.session.send(ready_request)
+        if response.status_code == 200:
+            logging.debug("Track started")
+        else:
+            logging.warning("Problem occurred while starting a new track: " + str(response.status_code))
 
     def logout(self):
         # sending request to server to end a session

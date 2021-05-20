@@ -16,11 +16,6 @@ class ObdReader:
 
     def start_read(self):
         # connecting to OBD module and
-        # commands = connection.supported_commands
-        # for i in commands:
-        #     print(i)
-        # resp = obd.commands.GET_DTC
-        # print(self.connection.query(obd.commands.GET_DTC))
         for i in self.commands_watching:
             self.connection.watch(i, callback=self.sender.pack)
         self.connection.start()
@@ -31,4 +26,10 @@ class ObdReader:
             print("No DTC codes")
         else:
             print(dtc_codes)
+
+    def check_supported_commands(self):
+        #checking which commands are supported by obd
+        commands = self.connection.supported_commands
+        for i in commands:
+            print(i)
 

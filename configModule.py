@@ -18,6 +18,8 @@ class Config:
             self.parser.read('config.ini')
             self.check_server_credentials()
             # self.get_config_from_server()
+        self.server_API_connection = RequestAPI(self.section_returner('login'))
+
 
     def create_new_config(self):
         # when there is no config file, this function is creating a new file with empty config
@@ -41,14 +43,16 @@ class Config:
 
     def get_config_from_server(self):
         # creating an object of API instance with login data from config.ini
-        server_API_connection = RequestAPI(self.section_returner('login'))
+        self.server_API_connection = RequestAPI(self.section_returner('login'))
         # after successful login get json and save it to config file
-        if server_API_connection.check_authorization():
-            self.parser['server'] = server_API_connection.get_config_from_server()
+        if self.server_API_connection.check_authorization():
+            self.parser['server'] = self.server_API_connection.get_config_from_server()
             self.parser.write(open('config.ini', 'w'))
-            del(server_API_connection)
         else:
             pass
 
     def return_send_interval(self):
         return self.parser['server']['sendinterval']
+
+    def return_API(self):
+        return self.server_API_connection
