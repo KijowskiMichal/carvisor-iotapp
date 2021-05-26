@@ -3,48 +3,53 @@ import datetime
 
 class Sender:
 
-    def __init__(self, sendinterval, API):
+    def __init__(self, sendinterval,API):
         self.count_iteration = 0
-        # self.max_iterations = 3
+        self.max_iterations = 3
         self.values = 3
-        self.max_iterations = int(sendinterval)
+        # self.max_iterations = int(sendinterval)
         self.internal_counter = 0
         self.data = {}
         self.API = API
-        self.data[self.count_iteration] = {}
+        self.actual_time = datetime.datetime.now().timestamp()
+        self.data[self.actual_time] = {}
         self.names = {"12": "RPM","13": "Speed","17": "Throttle Pos"}
         self.longitude = 52.45726
         self.latitude = 16.92397
-        self.speedc= 0
-        self.rpmc= 0
-
 
     def pack(self,value,name):
-        self.data[self.count_iteration][self.names[str(name)]] = value.value.magnitude
-        if self.names[str(name)] =="Speed":
-            self.speedc+=int(value.value.magnitude)
-        if self.names[str(name)] =="RPM":
-            self.rpmc+=int(value.value.magnitude)
-        if self.internal_counter >=self.values-1:
-            self.gpsdata(self.data[self.count_iteration])
-            self.internal_counter=0
-            self.count_iteration+=1
-            if self.count_iteration == self.max_iterations:
+        # assign value from obd to dict
+        try:
+            self.data[self.actual_time][self.names[str(name)]] = value.value.magnitude
+        except AttributeError:
+            self.data[self.actual_time][self.names[str(name)]] = 0
+        if len(self.data[self.actual_time]) >= self.values-1:
+            self.gpsdata(self.data[self.actual_time])
+            self.get_time_to_iteration()
+            if len(self.data) >= self.max_iterations:
                 self.prepare_to_send()
             else:
-                self.data[self.count_iteration] = {}
-        else:
-            self.internal_counter+=1
+                self.data[self.actual_time] = {}
 
     def gpsdata(self,iteration):
+        #generating fake gps data
         iteration['gps_longitude'] = ("%.5f" % self.longitude)
         iteration['gps_latitude'] = ("%.5f" % self.latitude)
         self.latitude -= 0.00060
 
     def prepare_to_send(self):
-        self.count_iteration=0
-        self.data['time'] = {"time": (datetime.datetime.now() - datetime.timedelta(seconds=self.max_iterations)).timestamp()}
-        data_prep = json.dumps(self.data)
+        data_prep = self.data
         self.data = {}
-        self.data[self.count_iteration] = {}
-        self.API.send_data_to_server(data_prep)
+        self.get_time_to_iteration()
+        self.data[self.actual_time] = {}
+        self.API.send_obd_data(data_prep)
+        # print(data_prep)
+
+    def write_manually(self, data_to_write):
+        self.data = data_to_write
+
+    def print_data(self):
+        return self.data
+
+    def get_time_to_iteration(self):
+        self.actual_time = datetime.datetime.now().timestamp()
