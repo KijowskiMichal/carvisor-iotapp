@@ -13,11 +13,9 @@ class RequestAPI:
         self.saver = saver
         self.connection_retries_number = 3
         self.login_data = json.dumps({"licensePlate": login_data['license_plate'], 'password': login_data['password']})
-        self.login_data_user = json.dumps({"login": login_data['user'], 'password': login_data['password_user']})
         self.session = requests.Session()
         self.start_session_car()
-        self.start_session_user()
-        # self.start_track()
+        self.start_track()
 
 
     # def __del__(self):
@@ -49,33 +47,24 @@ class RequestAPI:
             else:
                 logging.warning("Server unreachable, error code: " + str(response.status_code))
 
-    def start_session_user(self):
-        # starting new session with server
-        for i in range(self.connection_retries_number):
-            response = self.POST("API/authorization/authorize",self.login_data_user)
-            if response.status_code == 200:
-                logging.debug("User logged in")
-                break
-            elif response.status_code == 406:
-                logging.warning("Wrong username or/and password")
-                break
-            else:
-                logging.warning("Server unreachable, error code: " + str(response.status_code))
 
     def send_obd_data(self, obd_data):
-        response = self.POST("API/track/updateTrackData/",json.dumps(obd_data))
+        response = self.POST("API/track/updateTrackData/",obd_data)
+        print(obd_data)
         if response.status_code == 200:
             logging.debug("Sending obd data finished")
         else:
-            # print(response.content)
-            self.store_obd_data(obd_data)
+            print(response.content)
+            # self.store_obd_data(obd_data)
             logging.warning("Problem occurred when sending obd data to server, error code: " + str(response.status_code))
 
     def start_track(self):
-        start_data = json.dumps({"time": datetime.datetime.now().timestamp(),"private": False, "gps_longitude":52.45726,"gps_latitude":16.92397})
+        start_data = json.dumps({ "nfc_tag":"AB", "time": datetime.datetime.now().timestamp(),"private": False, "gps_longitude":52.45726,"gps_latitude":16.92397})
         response = self.POST("API/track/start",start_data)
         if response.status_code == 200:
             logging.debug("Track started")
+        elif response.status_code == 409:
+            logging.debug("Track exist, working on existing track")
         else:
             logging.warning("Problem occurred while starting a new track: " + str(response.status_code))
 
