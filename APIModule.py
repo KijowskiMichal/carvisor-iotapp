@@ -67,6 +67,7 @@ class RequestAPI:
         if response.status_code == 200:
             logging.debug("Sending obd data finished")
         else:
+            # print(response.content)
             self.store_obd_data(obd_data)
             logging.warning("Problem occurred when sending obd data to server, error code: " + str(response.status_code))
 

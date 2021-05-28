@@ -41,7 +41,7 @@ class CarVisor:
 
     def start_obd_reading(self):
         self.obd.start_read()
-        input("Rozpoczęto odczyt OBD.")
+        input("Rozpoczęto odczyt OBD.\n")
 
     def server_unreachable_handler(self):
         self.API = Saver()

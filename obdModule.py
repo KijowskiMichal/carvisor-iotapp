@@ -13,6 +13,7 @@ class ObdReader:
 
 
     def logging(self):
+        # Function created when you want to see all data from obd logger
         obd.logger.setLevel(obd.logging.DEBUG)
 
     def check_connection(self):
