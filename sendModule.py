@@ -8,7 +8,7 @@ class Sender:
     def __init__(self, sendinterval, API,gps):
         self.count_iteration = 0
         self.max_iterations = 3
-        self.values = 4
+        self.values = 3
         self.internal_counter = 0
         # self.max_iterations = int(sendinterval)
         self.data = {}

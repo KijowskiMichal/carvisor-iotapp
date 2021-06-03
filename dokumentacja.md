@@ -14,6 +14,10 @@
     Moduł ten zarządza połączeniem urządzenia IoT z interfejsem OBD
 #### - Send
     Moduł służący do przygotowania danych do przesłania na serwer
+#### - Saver
+    Moduł służący do przechowywania danych do późniejszego przesłania na serwer
+#### - Gps
+    Moduł służący do obsługi modułu GPS lub jego emulacji
 
 ## Funkcje modułów
 
@@ -94,6 +98,24 @@
 ####
     prepare_to_send
     Funkcja przygotowująca dane do przesłania na serwer przy pomocy modułu API
+### Saver
+    send_obd_data
+    Funkcja Zapisująca dane w przypadku braku możliwości ich wysłania
+####
+    get_all_data
+    Funkcja pobierająca wszystkie dane z bazy
+####
+    get_amount_of_data
+    Funkcja pobierająca ilość wpisów w bazie
+####
+    send_payload
+    Funkcja wysyłająca dane na serwer w przypadku przywrócenia połączenia
+####
+    get_API
+    Funkcja pobierająca obiekt API
+####
+    remove_entry
+    Funkcja usuwająca wpis z bazy
 ---
 # Testy
 

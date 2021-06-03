@@ -6,9 +6,9 @@ class ObdReader:
 
     def __init__(self,send):
         # self.logging()
-        self.connection = obd.Async('/dev/pts/1',fast=False, delay_cmds=1)
+        self.connection = obd.Async('/dev/pts/2',fast=False, delay_cmds=1)
         # self.connection = obd.Async(fast=False, delay_cmds=1)
-        self.commands_watching = [obd.commands.RPM,obd.commands.SPEED,obd.commands.THROTTLE_POS,obd.commands.FUEL_LEVEL]
+        self.commands_watching = [obd.commands.RPM,obd.commands.SPEED,obd.commands.THROTTLE_POS]
         self.sender = send
 
 
