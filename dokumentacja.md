@@ -62,8 +62,14 @@
     start_logging
     Funkcja rozpoczynająca logowanie działania aplikacji
 ####
+    init_obd
+    Funkcja rozpoczynająca połączenie z pojazdem
+####
     start_obd_reading
     Funkcja rozpoczynająca odczyt z interfejsu OBD
+####
+    server_unreachable_handler
+    Funkcja do obsługi aplikacji w przypadku braku połączenia z serwerem
 ### OBD
     logging
     Funkcja określająca wyświetlanie logów OBD o danej ważności
@@ -80,9 +86,11 @@
     pack
     Funkcja pakująca dane dostarczone przez moduł OBD
 ####
-    gpsdata
-    Funkcja generująca sztuczny ruch GPS na potrzeby testów i wdrażania
-    funkcji mapy po stronie WEB
+    get_new_timestamp
+    Funkcja pobierająca nowy timestamp na potrzeby kolejnej iteracji
+####
+    new_iteration
+    Funkcja czyszcząca zmienne dla następnej iteracji danych
 ####
     prepare_to_send
     Funkcja przygotowująca dane do przesłania na serwer przy pomocy modułu API
@@ -91,3 +99,5 @@
 
 - Sprawdzanie czy dane z modułu send są poprawnie przesyłane do modułu API
 - Sprawdzanie połączenia z serwerem
+- Sprawdzanie czy dane są poprawnie zapisywane w lokalnej bazie
+- Sprawdzanie czy odczyty z GPS są prawidłowe
